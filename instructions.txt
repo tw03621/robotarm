@@ -50,3 +50,9 @@ ros2 run mycobot_320pi teleop_keyboard
 ros
 
 docker swarm join --token SWMTKN-1-3sagr0bnb34q7bve2hksf784tmq4qpw8k6xa5o36hkg5kl337h-5y4fpbg2fr2203fgxw0lxeggx 192.168.178.3:2377
+
+
+
+
+docker swarm join --token SWMTKN-1-2yo81160iyorqih9dl93fx4ye60fzq91p9cnx36auo3uk2z9t0-5bb737orw74sbxj1h4da1vni3 192.168.178.53:2377
+
