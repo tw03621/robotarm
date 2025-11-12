@@ -8,10 +8,8 @@ docker run -d \
 
 docker run -it \
   -v /Users/tomwauters/Development/colcon_ws:/root/colcon_ws  \
-  --network=host \
-  -p 5900:5900 \
-  -p 6080:6080 \
-  tom-humble-desktop:1.0
+  --network host \
+  tom-humble-desktop:1.1
 
 
 
@@ -38,7 +36,7 @@ rosdep install -yr --from-paths /root/colcon_ws --ignore-src
 
 
 # build docker
-docker build . --file /Users/tomwauters/Development/scripts/DockerFile --tag tom-humble-desktop:1.0
+docker build . --file /Users/tomwauters/Development/scripts/DockerFile --tag tom-humble-desktop:1.1
 
 colcon build --symlink-install
 
@@ -50,3 +48,5 @@ ros2 launch mycobot_320pi tom_slider_control.launch.py
 ros2 run mycobot_320pi teleop_keyboard
 
 ros
+
+docker swarm join --token SWMTKN-1-3sagr0bnb34q7bve2hksf784tmq4qpw8k6xa5o36hkg5kl337h-5y4fpbg2fr2203fgxw0lxeggx 192.168.178.3:2377
