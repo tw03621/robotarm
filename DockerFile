@@ -1,0 +1,57 @@
+FROM osrf/ros:humble-desktop-full
+
+# Prevent interactive prompts during package installs
+ENV DEBIAN_FRONTEND=noninteractive
+
+# make sure latest updates are available
+RUN sudo apt update
+
+# install pip
+RUN sudo apt -y install python3-pip
+
+# install python serial module
+RUN sudo pip install pyserial
+
+# install pymyrobot
+RUN mkdir /tmp/pymycobot
+WORKDIR /tmp/pymycobot
+RUN git clone https://github.com/elephantrobotics/pymycobot.git
+WORKDIR /tmp/pymycobot/pymycobot
+RUN sudo python3 setup.py install
+
+# install required ros2 dependencies
+RUN mkdir /tmp/temp_ws
+WORKDIR /tmp/temp-ws
+COPY package.xml /tmp/temp-ws
+RUN rosdep install -yr --from-paths /tmp/temp_ws --ignore-src
+
+# source the ros2 env
+RUN echo "source /root/colcon_ws/install/setup.bash" >> /root/.bashrc
+RUN echo "export ROS_DOMAIN_ID=1" >> /root/.bashrc
+
+WORKDIR /root/colcon_ws
+
+# add vnc viewer
+# Install XFCE desktop + VNC + noVNC dependencies
+# RUN apt-get update && apt-get install -y \
+#    xfce4 xfce4-goodies \
+#    x11vnc xvfb \
+#    websockify novnc \
+#    net-tools curl \
+#    && apt-get clean && rm -rf /var/lib/apt/lists/*
+
+# Create a VNC password (change as you wish)
+#RUN mkdir -p /root/.vnc && \
+#    x11vnc -storepasswd vncpassword /root/.vnc/passwd
+
+# Copy in startup script
+#COPY startup.sh /startup.sh
+#RUN chmod +x /startup.sh
+
+# Expose ports:
+# 5900 -> direct VNC
+# 6080 -> web (noVNC)
+#EXPOSE 5900 6080
+
+#CMD ["/startup.sh"]
+

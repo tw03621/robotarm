@@ -1,0 +1,52 @@
+# run docker 
+docker run -d \
+  -v /Users/tomwauters/Development/colcon_ws:/root/colcon_ws  \
+  -p 5900:5900 \
+  -p 6080:6080 \
+  tom-humble-desktop:1.0
+
+
+docker run -it \
+  -v /Users/tomwauters/Development/colcon_ws:/root/colcon_ws  \
+  --network=host \
+  -p 5900:5900 \
+  -p 6080:6080 \
+  tom-humble-desktop:1.0
+
+
+
+
+# setup workspace
+git clone -b humble https://github.com/elephantrobotics/mycobot_ros2.git
+colcon build --symlink-install
+
+
+# DockerFile
+sudo apt update
+sudo apt -y install python3-pip
+sudo pip install pyserial
+mkdir /tmp/pymycobot
+cd /tmp/pymycobot
+git clone https://github.com/elephantrobotics/pymycobot.git
+cd pymycobot
+sudo python3 setup.py install
+
+rosdep install -yr --from-paths /Users/tomwauters/Development/colcon_ws --ignore-src
+
+rosdep install -yr --from-paths /root/colcon_ws --ignore-src
+
+
+
+# build docker
+docker build . --file /Users/tomwauters/Development/scripts/DockerFile --tag tom-humble-desktop:1.0
+
+colcon build --symlink-install
+
+source /root/colcon_ws/install/setup.bash
+
+# launch mycobot_ros2
+ros2 launch mycobot_320pi tom_slider_control.launch.py
+
+ros2 run mycobot_320pi teleop_keyboard
+
+ros
